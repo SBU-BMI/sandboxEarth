@@ -25,19 +25,50 @@ earth={
 
 // build UI
 if(earth.div){
-    earth.add2div=function(h){
+    let log = console.log
+    earth.add2div=function(h,div){
+        div=div||earth.div
         $(h).appendTo(earthDiv)
     }
     // get API Key
-    earth.add2div('<div>API Key: <input id="apiKey" style="color:blue"> <button id="apiButton" class="btn btn-primary">demo</button> <br> Clicking on the button will borrow Google Maps demo api key, if you abuse it Google will block this application</div>')
-    apiButton.onclick = function(){
-        apiKey.value='AIzaSyDIJ9XX2ZvRKCJcFRrl-lRanEtFUow4piM'  // Google developers demo key
-        earth.imgDiv=document.getElementById('imgDiv')
-        if(!earth.imgDiv){
-            earth.add2div('<div id="imgDiv"></div>')
+    earth.add2div('<div><b style="color:blue">API Key:</b> <input id="apiKey" style="color:blue"> <button id="earthConnectBt" class="btn btn-success">Connect</button> <button id="getApiKey" class="btn btn-primary">Get Key*</button> <p id="earthMsg">* I don\'t want to pay for <a href="https://developers.google.com/maps/documentation/static-maps/get-api-key" target="_blank">your</a> usage ;-)</p></div>')
+    earth.add2div('<div  id="imgDiv"></div>')
+    earth.imgDiv=document.getElementById('imgDiv')
+    getApiKey.onclick = function(){
+        if(localStorage.imgkey){
+            apiKey.value=localStorage.imgkey
+        }else{
+            window.open('https://developers.google.com/maps/documentation/static-maps/get-api-key')
         }
+    }
+    earthConnectBt.onclick = function(){
+        log('loading image API')
+        $.getScript("https://maps.googleapis.com/maps/api/js?key="+apiKey.value)
+         .then(earth.fun)
+    }
+
+    earth.fun=function(){
+        // https://developers.google.com/maps/documentation/static-maps/intro
+        // https://developers.google.com/maps/documentation/javascript/
+        
+        // http://maps.googleapis.com/maps/api/staticmap?sensor=false&size=640x400&maptype=satellite&visible=29.8,-13.09&visible=27.38,-18.53
+        // https://stackoverflow.com/questions/9087166/how-can-i-extract-a-satellite-image-from-google-maps-given-a-lat-long-rectangle
+
+        /*
+        log('having fun with images')
+        var map = new google.maps.Map(document.getElementById('imgDiv'), {
+          center: {lat: -34.397, lng: 150.644},
+          // Set mapTypeId to SATELLITE in order
+          // to activate satellite imagery.
+          mapTypeId: 'satellite',
+          scrollwheel: false,
+          zoom: 8
+        });
+        */
     }
 
     
 
 }
+
+
