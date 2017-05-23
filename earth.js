@@ -31,7 +31,14 @@ if(earth.div){
         $(h).appendTo(earthDiv)
     }
     // get API Key
-    earth.add2div('<div><b style="color:blue">API Key:</b> <input id="apiKey" style="color:blue"> <button id="earthConnectBt" class="btn btn-success">Connect</button> <button id="getApiKey" class="btn btn-primary">Get Key*</button> <p id="earthMsg">* I don\'t want to pay for <a href="https://developers.google.com/maps/documentation/static-maps/get-api-key" target="_blank">your</a> usage ;-)</p></div>')
+    earth.add2div('<div><b style="color:blue">API Key:</b> <input id="apiKey" style="color:blue" type="password"> <button id="earthConnectBt" class="btn btn-success">Connect</button> <button id="getApiKey" class="btn btn-primary">Get Key*</button> <input id="keyHide" type="checkbox" checked=true> hide <p id="earthMsg">* I don\'t want to pay for <a href="https://developers.google.com/maps/documentation/static-maps/get-api-key" target="_blank">your</a> usage ;-)</p></div>')
+    keyHide.onchange=function(){
+        if(this.checked){
+            apiKey.type='password'
+        } else {
+            apiKey.type='text'
+        }
+    }
     earth.add2div('<div  id="imgDiv"></div>')
     earth.imgDiv=document.getElementById('imgDiv')
     getApiKey.onclick = function(){
