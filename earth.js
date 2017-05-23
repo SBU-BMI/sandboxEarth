@@ -56,10 +56,15 @@ if(earth.div){
 
     earth.fun=function(){
         // http://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&visible=29.8,-13.09&visible=27.38,-18.53
-        earth.im = document.createElement('img')
-        earth.imgDiv.innerHTML='' // reset
+        // https://developers.google.com/maps/documentation/static-maps/intro
+        // https://developers.google.com/maps/documentation/javascript/earth.im = document.createElement('img')
+        let h = '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-home"></span></button>'
+        h+=' Latitude:<input id="latitudePos" value="40" size=5 style="color:blue;text-align:right">;  Longitude:<input id="longitudePos" value="-73" size=5 style="color:blue;text-align:right">'
+        earth.imgDiv.innerHTML= h
+        earth.im = new Image
         $(earth.im).appendTo(earth.imgDiv)
-        earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
+        //earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
+        earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=41,-73&visible=40.5,-73.5"
         earth.im.onload=function(){
             localStorage.imgkey=apiKey.value
             earthMsg.innerHTML='<span style="color:green">image loaded</span>'
@@ -67,24 +72,6 @@ if(earth.div){
         earth.im.onerror=function(){
             earthMsg.innerHTML='<span style="color:red">error loading image, maybe invalid key? bad connection?</span>'
         }
-        
-        // https://developers.google.com/maps/documentation/static-maps/intro
-        // https://developers.google.com/maps/documentation/javascript/
-        
-        // http://maps.googleapis.com/maps/api/staticmap?sensor=false&size=640x400&maptype=satellite&visible=29.8,-13.09&visible=27.38,-18.53
-        // https://stackoverflow.com/questions/9087166/how-can-i-extract-a-satellite-image-from-google-maps-given-a-lat-long-rectangle
-
-        /*
-        log('having fun with images')
-        var map = new google.maps.Map(document.getElementById('imgDiv'), {
-          center: {lat: -34.397, lng: 150.644},
-          // Set mapTypeId to SATELLITE in order
-          // to activate satellite imagery.
-          mapTypeId: 'satellite',
-          scrollwheel: false,
-          zoom: 8
-        });
-        */
     }
 
     
