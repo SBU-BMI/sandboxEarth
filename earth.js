@@ -43,11 +43,16 @@ if(earth.div){
     }
     earthConnectBt.onclick = function(){
         log('loading image API')
-        $.getScript("https://maps.googleapis.com/maps/api/js?key="+apiKey.value)
-         .then(earth.fun)
+        $.getScript("https://maps.googleapis.com/maps/api/js?key="+apiKey.value+"&callback=earth.fun")
+         //.then(earth.fun)
     }
 
     earth.fun=function(){
+        // http://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&visible=29.8,-13.09&visible=27.38,-18.53
+        earth.im = document.createElement('img')
+        earth.imgDiv.innerHTML='' // reset
+        $(earth.im).appendTo(earth.imgDiv)
+        earth.im.src="http://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
         // https://developers.google.com/maps/documentation/static-maps/intro
         // https://developers.google.com/maps/documentation/javascript/
         
