@@ -52,7 +52,7 @@ if(earth.div){
         earth.im = document.createElement('img')
         earth.imgDiv.innerHTML='' // reset
         $(earth.im).appendTo(earth.imgDiv)
-        earth.im.src="http://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
+        earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
         earth.im.onload=function(){
             localStorage.imgkey=apiKey.value
             earthMsg.innerHTML='<span style="color:green">image loaded</span>'
