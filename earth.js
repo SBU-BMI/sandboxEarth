@@ -53,6 +53,14 @@ if(earth.div){
         earth.imgDiv.innerHTML='' // reset
         $(earth.im).appendTo(earth.imgDiv)
         earth.im.src="http://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
+        earth.im.onload=function(){
+            localStorage.imgkey=apiKey.value
+            earthMsg.innerHTML='<span style="color:green">image loaded</span>'
+        }
+        earth.im.onerror=function(){
+            earthMsg.innerHTML='<span style="color:red">error loading image, maybe invalid key? bad connection?</span>'
+        }
+        
         // https://developers.google.com/maps/documentation/static-maps/intro
         // https://developers.google.com/maps/documentation/javascript/
         
