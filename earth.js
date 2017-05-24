@@ -11,6 +11,7 @@ async function process(n){
     console.log('... ended normal process')
     await sleep(n)
     console.log('... ended twice as long process')
+    debugger
 }
 // try process(1000)
 
@@ -60,6 +61,7 @@ if(earth.div){
         // https://developers.google.com/maps/documentation/javascript/earth.im = document.createElement('img')
         let h = '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-home"></span></button>'
         h+=' Latitude:<input id="latitudePos" value="40" size=5 style="color:blue;text-align:right">;  Longitude:<input id="longitudePos" value="-73" size=5 style="color:blue;text-align:right">'
+        h+='<br>'
         earth.imgDiv.innerHTML= h
         earth.im = new Image
         $(earth.im).appendTo(earth.imgDiv)
@@ -72,6 +74,17 @@ if(earth.div){
         earth.im.onerror=function(){
             earthMsg.innerHTML='<span style="color:red">error loading image, maybe invalid key? bad connection?</span>'
         }
+        earth.imMap=document.createElement('div')
+        earth.imMap.id='imMap'
+        $(earth.imMap).appendTo(earth.imgDiv)
+        earth.imMapFun=function () {
+        // Create a map object and specify the DOM element for display.
+        var map = new google.maps.Map(earth.imMap, {
+          center: {lat: -34.397, lng: 150.644},
+          scrollwheel: false,
+          zoom: 8
+        });
+      }
     }
 
     
