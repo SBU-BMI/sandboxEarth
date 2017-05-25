@@ -59,19 +59,31 @@ if(earth.div){
         // http://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&visible=29.8,-13.09&visible=27.38,-18.53
         // https://developers.google.com/maps/documentation/static-maps/intro
         // https://developers.google.com/maps/documentation/javascript/earth.im = document.createElement('img')
-        let h = '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-home"></span></button>'
-        h+=' Latitude:<input id="latitudePos" value="40" size=5 style="color:blue;text-align:right">;  Longitude:<input id="longitudePos" value="-73" size=5 style="color:blue;text-align:right">'
+        let h = '<button id="getLocation" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-home"></span></button>'
+        h+=' Latitude:<input id="latitudePos" value="40.9" size=5 style="color:blue;text-align:right">  Longitude:<input id="longitudePos" value="-73.05" size=5 style="color:blue;text-align:right"> Zoom:<input id="zoomPos" value="14" size=5 style="color:blue;text-align:right"> <span id="playIm" class="fa fa-play-circle-o" aria-hidden="true" style="font-size:x-large"></span>'
         h+='<br>'
         h+='<div class="row">'
-           h+='<div class="col-md-6"><div id="imMap" style="width:640px;height:640px"></div></div>'
-           h+='<div class="col-md-6"><img id="imgImg" with="640px" height="640px"></div>'
+           h+='<div class="col-md-6"><div id="imMap" style="width:1280px;height:1280px"></div></div>'
+           h+='<div class="col-md-6"><img id="imgImg" with="640px" height="640px"><br> Some more detail here</div>'
         h+='</div>'
         earth.imgDiv.innerHTML= h
         //earth.im = new Image
         //$(earth.im).appendTo(earth.imgDiv)
         //earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
+        // https://developers.google.com/maps/documentation/static-maps/intro
         earth.im=document.getElementById('imgImg')
-        earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=41,-73&visible=40.5,-73.5"
+        getLocation.onclick=function(){
+            earthMsg.innerHTML='<span style="color:blue">retrieving your current GPS coordinates ...</span>'
+            navigator.geolocation.getCurrentPosition(function(p){
+                earthMsg.innerHTML='<span style="color:green">your current GPS coordinates were retrieved successfully</span>'
+                earth.yourPos=p
+                longitudePos.value=earth.yourPos.coords.longitude
+                latitudePos.value=earth.yourPos.coords.latitude
+                earth.imMapFun()
+                earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=640x640&maptype=satellite&key="+apiKey.value+"&visible="+latitudePos.value+","+longitudePos.value
+            })
+        }
+        earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=640x640&maptype=satellite&key="+apiKey.value+"&visible="+latitudePos.value+","+longitudePos.value
         earth.im.onload=function(){
             localStorage.imgkey=apiKey.value
             earthMsg.innerHTML='<span style="color:green">image loaded</span>'
@@ -80,12 +92,15 @@ if(earth.div){
             earthMsg.innerHTML='<span style="color:red">error loading image, maybe invalid key? bad connection?</span>'
         }
         earth.imMap=document.getElementById('imMap')
-        earth.imMapFun=function () {
+        earth.imMapFun=function (lat,lng,zoom) {
+            lat=lat||parseFloat(latitudePos.value)
+            lng=lng||parseFloat(longitudePos.value)
+            zoom=zoom||parseInt(zoomPos.value)
             // Create a map object and specify the DOM element for display.
-            var map = new google.maps.Map(earth.imMap, {
-                center: {lat: -34.397, lng: 150.644},
+            earth.mapObj = new google.maps.Map(earth.imMap, {
+                center: {lat: lat, lng: lng},
                 scrollwheel: false,
-                zoom: 8
+                zoom: zoom
             });
         }
         earth.imMapFun()
