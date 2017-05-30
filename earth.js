@@ -60,11 +60,17 @@ if(earth.div){
         // https://developers.google.com/maps/documentation/static-maps/intro
         // https://developers.google.com/maps/documentation/javascript/earth.im = document.createElement('img')
         let h = '<button id="getLocation" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-home"></span></button>'
-        h+=' Latitude:<input id="latitudePos" value="40.9" size=5 style="color:blue;text-align:right">  Longitude:<input id="longitudePos" value="-73.05" size=5 style="color:blue;text-align:right"> Zoom:<input id="zoomPos" value="14" size=5 style="color:blue;text-align:right"> <span id="playIm" class="fa fa-play-circle-o" aria-hidden="true" style="font-size:x-large"></span>'
+        h+=' Latitude:<input id="latitudePos" value="40.9" size=8 style="color:blue;text-align:right">  Longitude:<input id="longitudePos" value="-73.05" size=8 style="color:blue;text-align:right"> Zoom:<input id="zoomPos" value="14" size=8 style="color:blue;text-align:right"> <span id="playIm" class="fa fa-play-circle-o" aria-hidden="true" style="font-size:x-large"></span>'
         h+='<br>'
         h+='<div class="row">'
            h+='<div class="col-md-6"><div id="imMap" style="width:1280px;height:1280px"></div></div>'
-           h+='<div class="col-md-6"><img id="imgImg" with="640px" height="640px"><br> Some more detail here</div>'
+           h+='<div class="col-md-6">'
+                h+='<img id="imgImg" with="640px" height="640px">'
+                h+='<p>mouse at (<span id="mouseLatitude"></span>,<span id="mouseLongitude"></span>)</p>'
+                //h+='<p>2</p>'
+                //h+='<p>3</p>'
+                //h+='<p>4</p>'
+           h+='</div>'
         h+='</div>'
         earth.imgDiv.innerHTML= h
         //earth.im = new Image
@@ -102,6 +108,19 @@ if(earth.div){
                 scrollwheel: false,
                 zoom: zoom
             });
+            //event listeners
+            // https://developers.google.com/maps/documentation/javascript/events
+            earth.mapObj.addListener('center_changed',function(){
+                var pos = this.center.toJSON()
+                longitudePos.value=pos.lng
+                latitudePos.value=pos.lat
+                //console.log(Date(),this.center.toString())
+            })
+            earth.mapObj.addListener('mousemove',function(ev,p){
+                earth.mouseLongitude=mouseLongitude.textContent=ev.latLng.lng()
+                earth.mouseLatitude=mouseLatitude.textContent=ev.latLng.lat()
+                //console.log(Date(),this.center.toString())
+            })
         }
         earth.imMapFun()
         
