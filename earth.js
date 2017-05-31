@@ -78,6 +78,7 @@ if(earth.div){
         //earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
         // https://developers.google.com/maps/documentation/static-maps/intro
         earth.im=document.getElementById('imgImg')
+        playIm.onclick=function(){earth.imMapFun()}
         getLocation.onclick=function(){
             earthMsg.innerHTML='<span style="color:blue">retrieving your current GPS coordinates ...</span>'
             navigator.geolocation.getCurrentPosition(function(p){
@@ -107,6 +108,7 @@ if(earth.div){
             earth.mapObj = new google.maps.Map(earth.imMap, {
                 center: {lat: lat, lng: lng},
                 scrollwheel: false,
+                mapTypeId: 'hybrid',
                 zoom: zoom
             });
             //event listeners
