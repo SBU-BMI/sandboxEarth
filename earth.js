@@ -127,7 +127,11 @@ if(earth.div){
             earth.mapObj.addListener('click',function(ev,p){
                 earth.clickLongitude=ev.latLng.lng()
                 earth.clickLatitude=ev.latLng.lat()
-                earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=640x640&maptype=satellite&key="+apiKey.value+"&visible="+earth.clickLatitude+","+earth.clickLongitude
+                earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=640x640&maptype=satellite&zoom="+(parseInt(zoomPos.value)+2)+"&key="+apiKey.value+"&visible="+earth.clickLatitude+","+earth.clickLongitude
+            }) //zoom_changed
+            earth.mapObj.addListener('zoom_changed',function(ev,p){
+                zoomPos.value=this.zoom
+                earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=640x640&maptype=satellite&zoom="+(parseInt(zoomPos.value)+2)+"&key="+apiKey.value+"&visible="+earth.clickLatitude+","+earth.clickLongitude
             })
 
         }
