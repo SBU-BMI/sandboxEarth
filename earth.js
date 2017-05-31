@@ -93,6 +93,7 @@ if(earth.div){
         earth.im.onload=function(){
             localStorage.imgkey=apiKey.value
             earthMsg.innerHTML='<span style="color:green">image loaded</span>'
+            earthConnectBt.disabled=true
         }
         earth.im.onerror=function(){
             earthMsg.innerHTML='<span style="color:red">error loading image, maybe invalid key? bad connection?</span>'
@@ -121,6 +122,12 @@ if(earth.div){
                 earth.mouseLatitude=mouseLatitude.textContent=ev.latLng.lat()
                 //console.log(Date(),this.center.toString())
             })
+            earth.mapObj.addListener('click',function(ev,p){
+                earth.clickLongitude=ev.latLng.lng()
+                earth.clickLatitude=ev.latLng.lat()
+                earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=640x640&maptype=satellite&key="+apiKey.value+"&visible="+earth.clickLatitude+","+earth.clickLongitude
+            })
+
         }
         earth.imMapFun()
         
