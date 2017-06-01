@@ -64,7 +64,8 @@ if(earth.div){
         h+='<br>'
         h+='<div class="row">'
            h+='<div class="col-md-6"><div id="imMap" style="width:1280px;height:1280px"></div></div>'
-           h+='<div class="col-md-6">'
+           h+='<div id="zoomedDiv" class="col-md-6">'
+                h+='<canvas id="zoomCanvas" width="640px" height="640px" clientWidth="640px" clientHeight="640px"></canvas>'
                 h+='<img id="imgImg" with="640px" height="640px">'
                 h+='<p>mouse at (<span id="mouseLatitude"></span>,<span id="mouseLongitude"></span>)</p>'
                 //h+='<p>2</p>'
@@ -78,6 +79,7 @@ if(earth.div){
         //earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
         // https://developers.google.com/maps/documentation/static-maps/intro
         earth.im=document.getElementById('imgImg')
+        earth.ctx = zoomCanvas.getContext('2d');
         playIm.onclick=function(){earth.imMapFun()}
         getLocation.onclick=function(){
             earthMsg.innerHTML='<span style="color:blue">retrieving your current GPS coordinates ...</span>'
@@ -95,11 +97,16 @@ if(earth.div){
             localStorage.imgkey=apiKey.value
             earthMsg.innerHTML='<span style="color:green">image loaded</span>'
             earthConnectBt.disabled=true
+            earth.ctx.drawImage(earth.im,0,0)
+            earth.im.hidden=true
         }
         earth.im.onerror=function(){
             earthMsg.innerHTML='<span style="color:red">error loading image, maybe invalid key? bad connection?</span>'
         }
         earth.imMap=document.getElementById('imMap')
+        earth.zoomCanvasIni=function(){
+            earth.im0=earth.ctx.drawImage(earth.im,0,0)
+        }
         earth.imMapFun=function (lat,lng,zoom) {
             lat=lat||parseFloat(latitudePos.value)
             lng=lng||parseFloat(longitudePos.value)
@@ -136,6 +143,7 @@ if(earth.div){
 
         }
         earth.imMapFun()
+
         
 
     }
