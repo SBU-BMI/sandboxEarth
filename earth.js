@@ -55,6 +55,21 @@ if(earth.div){
          //.then(earth.fun)
     }
 
+    // Image analysis utils
+	earth.colormap=function(v){ // value between 0 and 1
+		/*
+		var cm=[[0,0,0.5625],[0,0,0.625],[0,0,0.6875],[0,0,0.75],[0,0,0.8125],[0,0,0.875],[0,0,0.9375],[0,0,1],[0,0.0625,1],[0,0.125,1],[0,0.1875,1],[0,0.25,1],[0,0.3125,1],[0,0.375,1],[0,0.4375,1],[0,0.5,1],[0,0.5625,1],[0,0.625,1],[0,0.6875,1],[0,0.75,1],[0,0.8125,1],[0,0.875,1],[0,0.9375,1],[0,1,1],[0.0625,1,0.9375],[0.125,1,0.875],[0.1875,1,0.8125],[0.25,1,0.75],[0.3125,1,0.6875],[0.375,1,0.625],[0.4375,1,0.5625],[0.5,1,0.5],[0.5625,1,0.4375],[0.625,1,0.375],[0.6875,1,0.3125],[0.75,1,0.25],[0.8125,1,0.1875],[0.875,1,0.125],[0.9375,1,0.0625],[1,1,0],[1,0.9375,0],[1,0.875,0],[1,0.8125,0],[1,0.75,0],[1,0.6875,0],[1,0.625,0],[1,0.5625,0],[1,0.5,0],[1,0.4375,0],[1,0.375,0],[1,0.3125,0],[1,0.25,0],[1,0.1875,0],[1,0.125,0],[1,0.0625,0],[1,0,0],[0.9375,0,0],[0.875,0,0],[0.8125,0,0],[0.75,0,0],[0.6875,0,0],[0.625,0,0],[0.5625,0,0],[0.5,0,0]]
+		       .map(function(c){
+		       		return c.map(function(ci){
+		       			return parseInt(255*ci)
+		       		})
+		       });
+		if(!v){return cm}
+		*/
+		var cm = [[0,0,143],[0,0,159],[0,0,175],[0,0,191],[0,0,207],[0,0,223],[0,0,239],[0,0,255],[0,15,255],[0,31,255],[0,47,255],[0,63,255],[0,79,255],[0,95,255],[0,111,255],[0,127,255],[0,143,255],[0,159,255],[0,175,255],[0,191,255],[0,207,255],[0,223,255],[0,239,255],[0,255,255],[15,255,239],[31,255,223],[47,255,207],[63,255,191],[79,255,175],[95,255,159],[111,255,143],[127,255,127],[143,255,111],[159,255,95],[175,255,79],[191,255,63],[207,255,47],[223,255,31],[239,255,15],[255,255,0],[255,239,0],[255,223,0],[255,207,0],[255,191,0],[255,175,0],[255,159,0],[255,143,0],[255,127,0],[255,111,0],[255,95,0],[255,79,0],[255,63,0],[255,47,0],[255,31,0],[255,15,0],[255,0,0],[239,0,0],[223,0,0],[207,0,0],[191,0,0],[175,0,0],[159,0,0],[143,0,0],[127,0,0]]
+		return cm[Math.round(63*v)]
+	}
+
     earth.fun=function(){
         // http://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&visible=29.8,-13.09&visible=27.38,-18.53
         // https://developers.google.com/maps/documentation/static-maps/intro
@@ -65,7 +80,8 @@ if(earth.div){
         h+='<div class="row">'
            h+='<div class="col-md-6"><div id="imMap" style="width:1280px;height:1280px"></div></div>'
            h+='<div id="zoomedDiv" class="col-md-6">'
-                h+='<canvas id="zoomCanvas" width="640px" height="640px" clientWidth="640px" clientHeight="640px"></canvas>'
+                h+='<canvas id="zoomCanvas" width="640px" height="640px" clientWidth="640px" clientHeight="640px" style="position: absolute; left: 0; top: 0; z-index: 0"></canvas>'
+                h+='<canvas id="zoomMask" width="640px" height="640px" clientWidth="640px" clientHeight="640px" style="position: absolute; left: 0; top: 0; z-index: 1"></canvas>'
                 h+='<img id="imgImg" with="640px" height="640px">'
                 h+='<p>mouse at (<span id="mouseLatitude"></span>,<span id="mouseLongitude"></span>)</p>'
                 //h+='<p>2</p>'
@@ -78,8 +94,23 @@ if(earth.div){
         //$(earth.im).appendTo(earth.imgDiv)
         //earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=1000x1000&maptype=satellite&key="+apiKey.value+"&visible=29.8,-13.09&visible=27.38,-18.53"
         // https://developers.google.com/maps/documentation/static-maps/intro
+
+		
+
+
         earth.im=document.getElementById('imgImg')
+        earth.im.crossOrigin = "Anonymous";
+        earth.cv=document.getElementById('zoomCanvas')
         earth.ctx = zoomCanvas.getContext('2d');
+        earth.imData2data=function(imData){ // imData is the data structure returned by canvas.getContext('2d').getImageData(0,0,n,m)
+            var ii=[];for(var i=0;i<640;i++){ii.push(i)}
+	        return ii.map(function(i){
+	            return ii.map(function(j){
+	                var ij=(i*640+j)*4;
+	                return [imData.data[ij],imData.data[ij+1],imData.data[ij+2],imData.data[ij+3]]
+	            })
+	        })
+        }
         playIm.onclick=function(){earth.imMapFun()}
         getLocation.onclick=function(){
             earthMsg.innerHTML='<span style="color:blue">retrieving your current GPS coordinates ...</span>'
@@ -99,6 +130,7 @@ if(earth.div){
             earthConnectBt.disabled=true
             earth.ctx.drawImage(earth.im,0,0)
             earth.im.hidden=true
+            earth.imData=earth.imData2data(earth.ctx.getImageData(0,0,640,640))
         }
         earth.im.onerror=function(){
             earthMsg.innerHTML='<span style="color:red">error loading image, maybe invalid key? bad connection?</span>'
@@ -132,6 +164,7 @@ if(earth.div){
                 //console.log(Date(),this.center.toString())
             })
             earth.mapObj.addListener('click',function(ev,p){
+            	zoomMask.hidden=true
                 earth.clickLongitude=ev.latLng.lng()
                 earth.clickLatitude=ev.latLng.lat()
                 earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=640x640&maptype=satellite&zoom="+(parseInt(zoomPos.value)+2)+"&key="+apiKey.value+"&visible="+earth.clickLatitude+","+earth.clickLongitude
@@ -140,13 +173,68 @@ if(earth.div){
                 zoomPos.value=this.zoom
                 earth.im.src="https://maps.googleapis.com/maps/api/staticmap?size=640x640&maptype=satellite&zoom="+(parseInt(zoomPos.value)+2)+"&key="+apiKey.value+"&visible="+earth.clickLatitude+","+earth.clickLongitude
             })
-
+            // interacting with zoomed object
+            //zoomCanvas.onclick=function(ev){
+            //	4
+            //}
+            zoomCanvas.onclick=zoomMask.onclick=function(ev){
+            	var j = ev.offsetY
+            	var i = ev.offsetX
+            	earth.ij=[i,j]
+            	earth.ijrgba=earth.imData[j][i]
+            	console.log(j,i,earth.imData[j][i])
+            	earth.writeZoom(earth.dist2data())
+            	zoomMask.hidden=false
+            }
+            earth.writeZoom=function(d){
+            	d = d || earth.dZoom
+            	var cx = zoomMask.getContext('2d')
+            	var imData = cx.createImageData(cx.canvas.height,cx.canvas.width);
+            	var data = imData.data
+            	// convert distances into rgba
+            	d.forEach(function(di,i){
+            		var j = i*4
+            		var c = earth.colormap(1-di)
+            		data[j]=c[0]   // r
+            		data[j+1]=c[1] // g
+            		data[j+2]=c[2] // b
+            		//data[j+3]=100
+            		//data[j+3]=parseInt((1-di)*100)    // alpha
+            		data[j+3]=parseInt((1-di)*100*(di<0.1))
+            	})
+            	imData.data=data
+            	cx.putImageData(imData,0,0)
+            }
+            earth.zoomDist=function(p){
+            	p = p || earth.ijrgba.slice(0,3)
+            	var mx = Math.pow(255,2)*3 
+            	var d2 = earth.imData.map(function(x,i){ // row
+            		return x.map(function(y,j){ // column
+            			y=y.slice(0,3) // only rgb
+            			return y.map((yi,i)=>Math.pow((yi-p[i]),2)) // distancemetric defined here
+            			        .reduce((a,b)=>a+b)/mx // scaling metric to 0 - 1
+            		})
+            	})
+            	return d2
+            }
+            earth.dist2data=function(p){
+            	var d2 = earth.zoomDist()
+            	var d = []
+            	d2.forEach(function(dj,j){
+            		dj.forEach(function(dji,i){
+            			d[j*640+i]=dji
+            		})
+            	})
+            	earth.dZoom=d
+            	return d
+            }
         }
         earth.imMapFun()
 
         
 
     }
+    $.getScript('http://jonasalmeida.github.io/jmat/jmat.js')
 
     
 
