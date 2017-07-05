@@ -234,7 +234,7 @@ if(earth.div){
         
 
     }
-    $.getScript('http://jonasalmeida.github.io/jmat/jmat.js')
+    $.getScript('https://jonasalmeida.github.io/jmat/jmat.js')
 
     
 
